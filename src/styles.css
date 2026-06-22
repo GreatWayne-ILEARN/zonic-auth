@@ -1,0 +1,268 @@
+:root {
+    --ink: #141414;
+    --grey: #5b5b5b;
+    --line: #e7e7e7;
+    --accent: #111;
+    --sf: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body,
+#root {
+    margin: 0;
+    height: 100%
+}
+
+body {
+    font-family: var(--sf);
+    background: #f6f6f4;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased
+}
+
+.wrap {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px
+}
+
+.card {
+    width: 100%;
+    max-width: 400px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .08);
+    padding: 30px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    justify-content: center;
+    margin-bottom: 4px
+}
+
+.logo .dot {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(145deg, #111, #3a3a3a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 800
+}
+
+.logo .wm {
+    font-weight: 800;
+    font-size: 21px;
+    letter-spacing: -.02em
+}
+
+.logo .wm b {
+    color: var(--grey);
+    font-weight: 600
+}
+
+h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    text-align: center;
+    margin: 6px 0 0
+}
+
+.sub {
+    font-size: 13.5px;
+    color: var(--grey);
+    text-align: center;
+    margin: 0 0 8px
+}
+
+label {
+    font-size: 12.5px;
+    color: var(--grey);
+    font-weight: 600;
+    margin-top: 4px
+}
+
+input {
+    height: 54px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0 16px;
+    font-family: var(--sf);
+    font-size: 16px;
+    outline: none;
+    background: #fff
+}
+
+input:focus {
+    border-color: #111
+}
+
+.otp {
+    text-align: center;
+    letter-spacing: 10px;
+    font-size: 24px;
+    font-weight: 700
+}
+
+.otp-note {
+    font-size: 14px;
+    color: var(--grey);
+    text-align: center;
+    margin: 0 0 4px
+}
+
+.google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 54px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: var(--sf)
+}
+
+.google .g {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: conic-gradient(#ea4335 0 25%, #fbbc05 0 50%, #34a853 0 75%, #4285f4 0);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px
+}
+
+.or {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--grey);
+    font-size: 12px
+}
+
+.or::before,
+.or::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line)
+}
+
+.primary {
+    height: 54px;
+    border: 0;
+    border-radius: 12px;
+    background: #111;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: var(--sf)
+}
+
+.primary:disabled {
+    opacity: .5
+}
+
+.text {
+    background: none;
+    border: 0;
+    color: #111;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: var(--sf);
+    padding: 6px
+}
+
+.switch {
+    text-align: center;
+    font-size: 14px;
+    color: var(--grey);
+    margin: 6px 0 0
+}
+
+.switch a {
+    color: #111;
+    font-weight: 700;
+    cursor: pointer
+}
+
+.err {
+    color: #c0112a;
+    font-size: 13.5px;
+    text-align: center;
+    margin: 8px 0 0
+}
+
+.demo {
+    font-size: 12px;
+    color: var(--grey);
+    text-align: center;
+    background: #f3f3f1;
+    border-radius: 9px;
+    padding: 9px;
+    margin: 8px 0 0
+}
+
+.ret {
+    font-size: 12px;
+    color: var(--grey);
+    text-align: center;
+    margin: 6px 0 0
+}
+
+.spin {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--line);
+    border-top-color: #111;
+    border-radius: 50%;
+    margin: 20px auto;
+    animation: s .8s linear infinite
+}
+
+@keyframes s {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+.success{
+  margin-top:8px;
+  padding:12px 14px;
+  border-radius:12px;
+  background:#ecfdf3;
+  border:1px solid #abefc6;
+  color:#027a48;
+  text-align:center;
+  font-size:13.5px;
+  font-weight:600;
+}
+
+.success::before{
+  content:"✓ ";
+}
