@@ -46,6 +46,8 @@ export default function App() {
   const [checking, setChecking] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showVerificationModal, setShowVerificationModal] =
+  useState(false);
 
   // Silent SSO: if already signed in here, forward straight back to the app.
   useEffect(() => {
@@ -62,9 +64,9 @@ export default function App() {
   }, []);
 
   const clearMessages = () => {
-  setErr(null);
-  setSuccess(null);
-};
+    setErr(null);
+    setSuccess(null);
+  };
 
   const done = async () => {
     if (redirect) await forwardWithSession(redirect);
@@ -132,19 +134,17 @@ export default function App() {
 
         if (error) throw error;
 
-        setSuccess(
-          "🎉 Account created successfully! You can now sign in with your email and password.",
-        );
+        // setSuccess(
+        //   "🎉 Account created successfully! You can now sign in with your email and password.",
+        // );
 
+        
         setTimeout(() => {
-  setSuccess(null);
-}, 4000);
+          setSuccess(null);
+        }, 4000);
 
-        setTimeout(() => {
-          setIsSignup(false);
-        }, 1500);
-
-        return;
+        setShowVerificationModal(true);
+return;
       }
 
       const { error } = await supabase!.auth.signInWithPassword({
@@ -157,8 +157,8 @@ export default function App() {
       setSuccess("✅ Login successful. Redirecting...");
 
       setTimeout(() => {
-  setSuccess(null);
-}, 4000);
+        setSuccess(null);
+      }, 4000);
 
       setTimeout(async () => {
         await done();
@@ -176,6 +176,31 @@ export default function App() {
       setBusy(false);
     }
   };
+
+  const getEmailProviderUrl= (email: string) => {
+  const domain = email.split("@")[1]?.toLowerCase();
+
+  switch (domain) {
+    case "gmail.com":
+      return "https://mail.google.com";
+    case "outlook.com":
+    case "hotmail.com":
+    case "live.com":
+      return "https://outlook.live.com";
+    case "yahoo.com":
+      return "https://mail.yahoo.com";
+    default:
+      return null;
+  }
+}
+
+const openMailbox = () => {
+  const providerUrl = getEmailProviderUrl(email);
+
+  if (providerUrl) {
+    window.open(providerUrl, "_blank");
+  }
+};
 
   if (checking)
     return (
@@ -218,23 +243,23 @@ export default function App() {
               <span>or</span>
             </div>
             <button
-  className="primary"
-  onClick={() => {
-    clearMessages();
-    setMode("email");
-  }}
->
-  Continue with Email
-</button>
+              className="primary"
+              onClick={() => {
+                clearMessages();
+                setMode("email");
+              }}
+            >
+              Continue with Email
+            </button>
 
             <p className="switch">
               {isSignup ? "Already have an account?" : "New to ZonicMe?"}{" "}
               <a
-  onClick={() => {
-    clearMessages();
-    setIsSignup(!isSignup);
-  }}
->
+                onClick={() => {
+                  clearMessages();
+                  setIsSignup(!isSignup);
+                }}
+              >
                 {isSignup ? "Sign in" : "Create one"}
               </a>
             </p>
@@ -266,29 +291,17 @@ export default function App() {
             </button>
             {/* <button className="text" onClick={() => sendCode("email")}>Email me a code instead</button> */}
             <button
-  className="text"
-  onClick={() => {
-    clearMessages();
-    setMode("choose");
-  }}
->
-  ‹ Back
-</button>
+              className="text"
+              onClick={() => {
+                clearMessages();
+                setMode("choose");
+              }}
+            >
+              ‹ Back
+            </button>
           </>
         )}
 
-        {/* {mode === "otp" && (
-          <>
-            <p className="otp-note">Enter the 6-digit code sent to {usedPhone ? (phone || "your phone") : (email || "your email")}.</p>
-            {usedPhone && !phone && <input placeholder="+234…" value={phone} onChange={(e) => setPhone(e.target.value)} />}
-            <input className="otp" inputMode="numeric" maxLength={6} value={code} placeholder="••••••"
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))} />
-            <button className="primary" disabled={busy || code.length < 4} onClick={verify}>
-              {busy ? "Verifying…" : "Verify & continue"}</button>
-            <button className="text" onClick={() => sendCode(usedPhone ? "phone" : "email")}>Resend code</button>
-            <button className="text" onClick={() => setMode("choose")}>‹ Back</button>
-          </>
-        )} */}
         {success && <div className="success">{success}</div>}
         {err && <p className="err">{err}</p>}
         {!hasBackend && (
@@ -302,6 +315,57 @@ export default function App() {
           </p>
         )}
       </div>
+
+      {showVerificationModal && (
+  <div className="verify-overlay">
+    <div className="verify-modal">
+      <div className="verify-icon">🎉</div>
+
+      <h2>Account Created</h2>
+
+      <p>
+        We've sent a verification email to
+      </p>
+
+      <div className="verify-email">
+        {email}
+      </div>
+
+      <p>
+        Please confirm your email address
+        before signing in to ZonicMe.
+      </p>
+
+      {getEmailProviderUrl(email) && (
+        <button
+          className="primary"
+          onClick={openMailbox}
+        >
+          Open Mailbox
+        </button>
+      )}
+
+      <button
+        className="secondary"
+        onClick={() => {
+          setShowVerificationModal(false);
+        }}
+      >
+        I'll Verify Later
+      </button>
+
+      <button
+        className="text"
+        onClick={() => {
+          setShowVerificationModal(false);
+          setIsSignup(false);
+        }}
+      >
+        I've Verified My Email
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 }
