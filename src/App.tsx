@@ -46,8 +46,7 @@ export default function App() {
   const [checking, setChecking] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [showVerificationModal, setShowVerificationModal] =
-  useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
 
   // Silent SSO: if already signed in here, forward straight back to the app.
   useEffect(() => {
@@ -138,13 +137,12 @@ export default function App() {
         //   "🎉 Account created successfully! You can now sign in with your email and password.",
         // );
 
-        
         setTimeout(() => {
           setSuccess(null);
         }, 4000);
 
         setShowVerificationModal(true);
-return;
+        return;
       }
 
       const { error } = await supabase!.auth.signInWithPassword({
@@ -177,30 +175,30 @@ return;
     }
   };
 
-  const getEmailProviderUrl= (email: string) => {
-  const domain = email.split("@")[1]?.toLowerCase();
+  const getEmailProviderUrl = (email: string) => {
+    const domain = email.split("@")[1]?.toLowerCase();
 
-  switch (domain) {
-    case "gmail.com":
-      return "https://mail.google.com";
-    case "outlook.com":
-    case "hotmail.com":
-    case "live.com":
-      return "https://outlook.live.com";
-    case "yahoo.com":
-      return "https://mail.yahoo.com";
-    default:
-      return null;
-  }
-}
+    switch (domain) {
+      case "gmail.com":
+        return "https://mail.google.com";
+      case "outlook.com":
+      case "hotmail.com":
+      case "live.com":
+        return "https://outlook.live.com";
+      case "yahoo.com":
+        return "https://mail.yahoo.com";
+      default:
+        return null;
+    }
+  };
 
-const openMailbox = () => {
-  const providerUrl = getEmailProviderUrl(email);
+  const openMailbox = () => {
+    const providerUrl = getEmailProviderUrl(email);
 
-  if (providerUrl) {
-    window.open(providerUrl, "_blank");
-  }
-};
+    if (providerUrl) {
+      window.open(providerUrl, "_blank");
+    }
+  };
 
   if (checking)
     return (
@@ -317,55 +315,42 @@ const openMailbox = () => {
       </div>
 
       {showVerificationModal && (
-  <div className="verify-overlay">
-    <div className="verify-modal">
-      <div className="verify-icon">🎉</div>
+        <div className="verify-overlay">
+          <div className="verify-modal">
+            <div className="verify-icon">🎉</div>
 
-      <h2>Account Created</h2>
+            <h2>Account Created</h2>
 
-      <p>
-        We've sent a verification email to
-      </p>
+            <p>We've sent a verification email to</p>
 
-      <div className="verify-email">
-        {email}
-      </div>
+            <div className="verify-email">{email}</div>
 
-      <p>
-        Please confirm your email address
-        before signing in to ZonicMe.
-      </p>
+            <p>
+              Please confirm your email address before signing in to ZonicMe.
+            </p>
 
-      {getEmailProviderUrl(email) && (
-        <button
-          className="primary"
-          onClick={openMailbox}
-        >
-          Open Mailbox
-        </button>
+            {getEmailProviderUrl(email) && (
+              <button className="primary" onClick={openMailbox}>
+                Open Mailbox
+              </button>
+            )}
+
+            <button className="secondary" onClick={openMailbox}>
+              Open Mailbox
+            </button>
+
+            <button
+              className="text"
+              onClick={() => {
+                setShowVerificationModal(false);
+                setIsSignup(false);
+              }}
+            >
+              I've Verified My Email
+            </button>
+          </div>
+        </div>
       )}
-
-      <button
-        className="secondary"
-        onClick={() => {
-          setShowVerificationModal(false);
-        }}
-      >
-        I'll Verify Later
-      </button>
-
-      <button
-        className="text"
-        onClick={() => {
-          setShowVerificationModal(false);
-          setIsSignup(false);
-        }}
-      >
-        I've Verified My Email
-      </button>
-    </div>
-  </div>
-)}
     </div>
   );
 }
