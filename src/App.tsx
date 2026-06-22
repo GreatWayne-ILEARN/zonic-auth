@@ -47,6 +47,7 @@ export default function App() {
   const [err, setErr] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [lastSignupAttempt, setLastSignupAttempt] = useState(0);
 
   // Silent SSO: if already signed in here, forward straight back to the app.
   useEffect(() => {
@@ -125,6 +126,17 @@ export default function App() {
         return;
       }
 
+      const now = Date.now();
+
+if (now - lastSignupAttempt < 60000) {
+  setErr(
+    "A verification email was recently sent. Please check your inbox."
+  );
+  return;
+}
+
+setLastSignupAttempt(now);
+
       if (isSignup) {
         const { error } = await supabase!.auth.signUp({
           email: email.trim(),
@@ -161,14 +173,17 @@ export default function App() {
       setTimeout(async () => {
         await done();
       }, 800);
-    } catch (e: any) {
-      if (e?.status === 429 || e?.message?.toLowerCase().includes("too many")) {
-        setErr(
-          "You've made too many login attempts. Please wait about a minute and try again.",
-        );
-      } else {
-        setErr(e?.message || "Authentication failed.");
-      }
+    }catch (e: any) {
+  console.log("SUPABASE AUTH ERROR:", e);
+
+  if (e?.status === 429) {
+    setErr(
+      e?.message ||
+      "Too many requests. Please wait before trying again."
+    );
+  } else {
+    setErr(e?.message || "Authentication failed.");
+  }
     } finally {
       authRequestRef.current = false;
       setBusy(false);
@@ -330,14 +345,12 @@ export default function App() {
             </p>
 
             {getEmailProviderUrl(email) && (
-              <button className="primary" onClick={openMailbox}>
+              <button className="secondary" onClick={openMailbox}>
                 Open Mailbox
               </button>
             )}
 
-            <button className="secondary" onClick={openMailbox}>
-              Open Mailbox
-            </button>
+            
 
             <button
               className="text"
