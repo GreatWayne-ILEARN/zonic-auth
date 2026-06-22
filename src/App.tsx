@@ -126,36 +126,28 @@ export default function App() {
         return;
       }
 
-      const now = Date.now();
+      if (isSignup) {
+  const now = Date.now();
 
-if (now - lastSignupAttempt < 60000) {
-  setErr(
-    "A verification email was recently sent. Please check your inbox."
-  );
+  if (now - lastSignupAttempt < 60000) {
+    setErr(
+      "A verification email was recently sent. Please check your inbox."
+    );
+    return;
+  }
+
+  setLastSignupAttempt(now);
+
+  const { error } = await supabase!.auth.signUp({
+    email: email.trim(),
+    password,
+  });
+
+  if (error) throw error;
+
+  setShowVerificationModal(true);
   return;
 }
-
-setLastSignupAttempt(now);
-
-      if (isSignup) {
-        const { error } = await supabase!.auth.signUp({
-          email: email.trim(),
-          password,
-        });
-
-        if (error) throw error;
-
-        // setSuccess(
-        //   "🎉 Account created successfully! You can now sign in with your email and password.",
-        // );
-
-        setTimeout(() => {
-          setSuccess(null);
-        }, 4000);
-
-        setShowVerificationModal(true);
-        return;
-      }
 
       const { error } = await supabase!.auth.signInWithPassword({
         email: email.trim(),
@@ -207,13 +199,18 @@ setLastSignupAttempt(now);
     }
   };
 
-  const openMailbox = () => {
-    const providerUrl = getEmailProviderUrl(email);
+const openMailbox = () => {
+  const providerUrl = getEmailProviderUrl(email);
 
-    if (providerUrl) {
-      window.open(providerUrl, "_blank");
-    }
-  };
+  if (providerUrl) {
+    window.open(providerUrl, "_blank");
+    return;
+  }
+
+  setErr(
+    "Please open your email application and click the verification link we sent."
+  );
+};
 
   if (checking)
     return (
@@ -345,12 +342,10 @@ setLastSignupAttempt(now);
             </p>
 
             {getEmailProviderUrl(email) && (
-              <button className="secondary" onClick={openMailbox}>
-                Open Mailbox
-              </button>
-            )}
-
-            
+  <button className="secondary" onClick={openMailbox}>
+    Open Mailbox
+  </button>
+)}
 
             <button
               className="text"
